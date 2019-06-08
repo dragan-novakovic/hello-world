@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = "0.2.45"
-humus = { path = "../.." }
+humus = { git = 'https://github.com/Dragan1810/humus.git' }
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
