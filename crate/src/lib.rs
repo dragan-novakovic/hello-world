@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 
 extern crate humus;
 
-use humus::render;
+use humus::{ vdom::{ VirtualDom }, render::{ t } };
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -14,10 +14,14 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 #[wasm_bindgen]
 pub fn run() -> Result<(), JsValue> {
     set_panic_hook();
-
     let window = web_sys::window().expect("should have a Window");
     let document = window.document().expect("should have a Document");
-    // render::h();
+    let root = document.get_element_by_id("root").expect("Should have a root element");
+
+    let mut vd = VirtualDom::new();
+
+     vd.render(root, t("Hello Woooooooorld"));
+    // render
     let p: web_sys::Node = document.create_element("p")?.into();
     p.set_text_content(Some(humus::say_may_name()));
     let body = document.body().expect("should have a body");
