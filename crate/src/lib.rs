@@ -33,8 +33,8 @@ pub fn run() {
         h(
             "div",
             vec![
-                h("h1", vec![t("Hello")]),
-                h("h1", vec![t("World")]),
+                h("span", vec![t("Hello")]),
+                h("span", vec![t("World")]),
                 h("h1", vec![t("Wasm")]),
             ],
         ),
