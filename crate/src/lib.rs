@@ -1,8 +1,10 @@
 use wasm_bindgen::prelude::*;
 
-extern crate humus;
-
-use humus::{ vdom::{ VirtualDom }, render::{ t } };
+use humus::{
+    node::Element,
+    render::{h, t},
+    vdom::VirtualDom,
+};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -11,24 +13,35 @@ use humus::{ vdom::{ VirtualDom }, render::{ t } };
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 // Called by our JS entry point to run the example.
-#[wasm_bindgen]
-pub fn run() -> Result<(), JsValue> {
+#[wasm_bindgen(start)]
+pub fn run() {
+    // Set up the panic hook for debugging when things go wrong.
     set_panic_hook();
-    let window = web_sys::window().expect("should have a Window");
-    let document = window.document().expect("should have a Document");
-    let root = document.get_element_by_id("root").expect("Should have a root element");
+
+    // Grab the document's `<body>`.
+    let window = web_sys::window().unwrap_throw();
+    let document = window.document().unwrap_throw();
+    let body = document.body().unwrap_throw();
+    let root: Element = wasm_bindgen::JsCast::dyn_into::<web_sys::Element>(body)
+        .unwrap()
+        .into();
 
     let mut vd = VirtualDom::new();
 
-     vd.render(root, t("Hello Woooooooorld"));
-    // render
-    let p: web_sys::Node = document.create_element("p")?.into();
-    p.set_text_content(Some(humus::say_may_name()));
-    let body = document.body().expect("should have a body");
-    let body: &web_sys::Node = body.as_ref();
-    body.append_child(&p)?;
+    vd.render(
+        root,
+        h(
+            "div",
+            vec![
+                h("h1", vec![t("Hello")]),
+                h("h1", vec![t("World")]),
+                h("h1", vec![t("Wasm")]),
+            ],
+        ),
+    );
 
-    Ok(())
+    // Run the virtual DOM forever and don't unmount it.
+    //vdom.forget();
 }
 
 fn set_panic_hook() {
